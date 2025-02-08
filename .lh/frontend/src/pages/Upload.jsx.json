@@ -1,0 +1,42 @@
+{
+    "sourceFile": "frontend/src/pages/Upload.jsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1738690574030,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738696643812,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,17 +12,17 @@\n \r\n     const formData = new FormData();\r\n     formData.append(\"file\", file);\r\n \r\n-    // try {\r\n-    //   await axios.post(\"/api/lists/upload-csv\", formData, {\r\n-    //     headers: { \"Content-Type\": \"multipart/form-data\" },\r\n-    //   });\r\n-    //   alert(\"CSV uploaded and distributed successfully\");\r\n-    //   navigate(\"/dashboard\");\r\n-    // } catch (error) {\r\n-    //   alert(\"Upload failed\");\r\n-    // }\r\n+    try {\r\n+      await axios.post(\"/api/lists/upload-csv\", formData, {\r\n+        headers: { \"Content-Type\": \"multipart/form-data\" },\r\n+      });\r\n+      alert(\"CSV uploaded and distributed successfully\");\r\n+      navigate(\"/dashboard\");\r\n+    } catch (error) {\r\n+      alert(\"Upload failed\");\r\n+    }\r\n   };\r\n \r\n   return (\r\n     <div className=\"flex flex-col items-center min-h-screen bg-gray-100 p-6\">\r\n"
+                },
+                {
+                    "date": 1738927471655,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,9 @@\n   const [file, setFile] = useState(null);\r\n   const navigate = useNavigate();\r\n \r\n   const handleUpload = async (e) => {\r\n+    \r\n     e.preventDefault();\r\n     if (!file) return alert(\"Please select a file\");\r\n \r\n     const formData = new FormData();\r\n"
+                },
+                {
+                    "date": 1738927481933,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,10 @@\n   const [file, setFile] = useState(null);\r\n   const navigate = useNavigate();\r\n \r\n   const handleUpload = async (e) => {\r\n-    \r\n+    let token = localStorage.getItem(\"token\");\r\n+    token = JSON.parse(token);\r\n     e.preventDefault();\r\n     if (!file) return alert(\"Please select a file\");\r\n \r\n     const formData = new FormData();\r\n"
+                },
+                {
+                    "date": 1738927498901,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     const formData = new FormData();\r\n     formData.append(\"file\", file);\r\n \r\n     try {\r\n-      await axios.post(\"/api/lists/upload-csv\", formData, {\r\n+      await axios.post(\"\", formData, {\r\n         headers: { \"Content-Type\": \"multipart/form-data\" },\r\n       });\r\n       alert(\"CSV uploaded and distributed successfully\");\r\n       navigate(\"/dashboard\");\r\n"
+                },
+                {
+                    "date": 1738927505740,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     const formData = new FormData();\r\n     formData.append(\"file\", file);\r\n \r\n     try {\r\n-      await axios.post(\"\", formData, {\r\n+      await axios.post(``, formData, {\r\n         headers: { \"Content-Type\": \"multipart/form-data\" },\r\n       });\r\n       alert(\"CSV uploaded and distributed successfully\");\r\n       navigate(\"/dashboard\");\r\n"
+                },
+                {
+                    "date": 1738927513230,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     const formData = new FormData();\r\n     formData.append(\"file\", file);\r\n \r\n     try {\r\n-      await axios.post(`/api/lists/upload-csv/`, formData, {\r\n+      await axios.post(`/api/lists/upload-csv/$`, formData, {\r\n         headers: { \"Content-Type\": \"multipart/form-data\" },\r\n       });\r\n       alert(\"CSV uploaded and distributed successfully\");\r\n       navigate(\"/dashboard\");\r\n"
+                }
+            ],
+            "date": 1738690574030,
+            "name": "Commit-0",
+            "content": "import { useState } from \"react\";\r\nimport axios from \"../api\";\r\nimport { useNavigate } from \"react-router-dom\";\r\n\r\nfunction Upload() {\r\n  const [file, setFile] = useState(null);\r\n  const navigate = useNavigate();\r\n\r\n  const handleUpload = async (e) => {\r\n    e.preventDefault();\r\n    if (!file) return alert(\"Please select a file\");\r\n\r\n    const formData = new FormData();\r\n    formData.append(\"file\", file);\r\n\r\n    // try {\r\n    //   await axios.post(\"/api/lists/upload-csv\", formData, {\r\n    //     headers: { \"Content-Type\": \"multipart/form-data\" },\r\n    //   });\r\n    //   alert(\"CSV uploaded and distributed successfully\");\r\n    //   navigate(\"/dashboard\");\r\n    // } catch (error) {\r\n    //   alert(\"Upload failed\");\r\n    // }\r\n  };\r\n\r\n  return (\r\n    <div className=\"flex flex-col items-center min-h-screen bg-gray-100 p-6\">\r\n      <div className=\"w-full max-w-lg bg-white shadow-lg rounded-2xl p-8\">\r\n        <h1 className=\"text-3xl font-bold text-center text-gray-800 mb-6\">Upload CSV File</h1>\r\n        \r\n        <form onSubmit={handleUpload} className=\"space-y-4\">\r\n          <div className=\"flex flex-col items-center border-2 border-dashed border-gray-300 p-6 rounded-lg\">\r\n            <input\r\n              type=\"file\"\r\n              accept=\".csv,.xlsx,.xls\"\r\n              onChange={(e) => setFile(e.target.files[0])}\r\n              required\r\n              className=\"w-full text-gray-700\"\r\n            />\r\n          </div>\r\n\r\n          <button\r\n            type=\"submit\"\r\n            className=\"w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-300\"\r\n          >\r\n            Upload\r\n          </button>\r\n        </form>\r\n\r\n        <button\r\n          onClick={() => navigate(\"/dashboard\")}\r\n          className=\"w-full mt-4 bg-gray-600 text-white font-semibold py-3 rounded-lg hover:bg-gray-700 transition duration-300\"\r\n        >\r\n          Back to Dashboard\r\n        </button>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n\r\nexport default Upload;\r\n"
+        }
+    ]
+}

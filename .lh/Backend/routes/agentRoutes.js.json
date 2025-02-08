@@ -1,0 +1,26 @@
+{
+    "sourceFile": "Backend/routes/agentRoutes.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1738696265542,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738696296056,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n     const { name, email, mobile, password } = req.body;\r\n     const hashedPassword = await bcrypt.hash(password, 10);\r\n     const newAgent = new User({ name, email, mobile, password: hashedPassword, role: 'agent' });\r\n     await newAgent.save();\r\n-    res.status(20!).json({ message: 'Agent added successfully' });\r\n+    res.status(20).json({ message: 'Agent added successfully' });\r\n });\r\n router.get('/count', async (req, res) => {\r\n     const newAgent = await  User.find({role: 'agent'});\r\n     res.json({ count:newAgent.length });\r\n"
+                },
+                {
+                    "date": 1738923493742,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n     const newAgent = new Agent({ name, email, mobile, password: hashedPassword, agentId });\r\n     await newAgent.save();\r\n     res.status(201).json({ message: 'Agent added successfully' });\r\n });\r\n-router.get('/count/:Id', async (req, res) => {\r\n+router.get('/count/:I', async (req, res) => {\r\n     const newAgent = await  User.find({role: 'agent'});\r\n     res.json({ count:newAgent.length });\r\n });\r\n router.get('/', async (req, res) => {\r\n"
+                }
+            ],
+            "date": 1738696265542,
+            "name": "Commit-0",
+            "content": "const express = require('express');\r\nconst bcrypt = require('bcryptjs');\r\nconst User = require('../models/User');\r\nconst router = express.Router();\r\n\r\nrouter.post('/add-agent', async (req, res) => {\r\n    const { name, email, mobile, password } = req.body;\r\n    const hashedPassword = await bcrypt.hash(password, 10);\r\n    const newAgent = new User({ name, email, mobile, password: hashedPassword, role: 'agent' });\r\n    await newAgent.save();\r\n    res.statujson({ message: 'Agent added successfully' });\r\n});\r\nrouter.get('/count', async (req, res) => {\r\n    const newAgent = await  User.find({role: 'agent'});\r\n    res.json({ count:newAgent.length });\r\n});\r\nrouter.get('/', async (req, res) => {\r\n    const newAgent = await  User.find({role: 'agent'});\r\n    res.json({ newAgent });\r\n});\r\n\r\nmodule.exports = router;\r\n"
+        }
+    ]
+}

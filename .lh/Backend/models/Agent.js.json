@@ -1,0 +1,70 @@
+{
+    "sourceFile": "Backend/models/Agent.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 13,
+            "patches": [
+                {
+                    "date": 1738923189655,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738923206357,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n const mongoose = require('mongoose');\r\n-const UserSchema = new mongoose.Schema({\r\n+const AgentSchema = new mongoose.Schema({\r\n     name: String,\r\n     email: { type: String, unique: true },\r\n     mobile: String,\r\n     password: String,\r\n"
+                },
+                {
+                    "date": 1738923216436,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,5 +5,5 @@\n     mobile: String,\r\n     password: String,\r\n     role: { type: String, default: 'agent' }\r\n });\r\n-module.exports = mongoose.model('User', UserSchema);\r\n+module.exports = mongoose.model('Agent', UserSchema);\r\n"
+                },
+                {
+                    "date": 1738923222357,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,5 +5,5 @@\n     mobile: String,\r\n     password: String,\r\n     role: { type: String, default: 'agent' }\r\n });\r\n-module.exports = mongoose.model('Agent', UserSchema);\r\n+module.exports = mongoose.model('Agent', AgentSchema);\r\n"
+                },
+                {
+                    "date": 1738923234277,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,7 +3,7 @@\n     name: String,\r\n     email: { type: String, unique: true },\r\n     mobile: String,\r\n     password: String,\r\n-    role: { type: String, default: 'agent' }\r\n+    \r\n });\r\n module.exports = mongoose.model('Agent', AgentSchema);\r\n"
+                },
+                {
+                    "date": 1738923243230,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,7 +3,7 @@\n     name: String,\r\n     email: { type: String, unique: true },\r\n     mobile: String,\r\n     password: String,\r\n-    \r\n+    added\r\n });\r\n module.exports = mongoose.model('Agent', AgentSchema);\r\n"
+                },
+                {
+                    "date": 1738923310447,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,7 +3,8 @@\n     name: String,\r\n     email: { type: String, unique: true },\r\n     mobile: String,\r\n     password: String,\r\n-    added\r\n+     agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n+        \r\n });\r\n module.exports = mongoose.model('Agent', AgentSchema);\r\n"
+                },
+                {
+                    "date": 1738923323701,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,8 @@\n     name: String,\r\n     email: { type: String, unique: true },\r\n     mobile: String,\r\n     password: String,\r\n-     agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n+     adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n         \r\n });\r\n module.exports = mongoose.model('Agent', AgentSchema);\r\n"
+                },
+                {
+                    "date": 1738923329795,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,8 @@\n     name: String,\r\n     email: { type: String, unique: true },\r\n     mobile: String,\r\n     password: String,\r\n-     adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n-        \r\n+    adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n+\r\n });\r\n module.exports = mongoose.model('Agent', AgentSchema);\r\n"
+                },
+                {
+                    "date": 1738996187931,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n const mongoose = require('mongoose');\r\n const AgentSchema = new mongoose.Schema({\r\n     name: String,\r\n     email: { type: String, unique: true },\r\n-    mobile: String,\r\n+    mobile: {String,\r\n     password: String,\r\n     adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n \r\n });\r\n"
+                },
+                {
+                    "date": 1738996194309,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n const mongoose = require('mongoose');\r\n const AgentSchema = new mongoose.Schema({\r\n     name: String,\r\n     email: { type: String, unique: true },\r\n-    mobile: {String,\r\n+    mobile: {typeString,\r\n     password: String,\r\n     adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n \r\n });\r\n"
+                },
+                {
+                    "date": 1738996199512,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n const mongoose = require('mongoose');\r\n const AgentSchema = new mongoose.Schema({\r\n     name: String,\r\n     email: { type: String, unique: true },\r\n-    mobile: {typeString,\r\n+    mobile: {type\"\":String,\r\n     password: String,\r\n     adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n \r\n });\r\n"
+                },
+                {
+                    "date": 1738996206547,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n const mongoose = require('mongoose');\r\n const AgentSchema = new mongoose.Schema({\r\n     name: String,\r\n     email: { type: String, unique: true },\r\n-    mobile: {type\"\":String,\r\n+    mobile: {type:String, un\r\n     password: String,\r\n     adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n \r\n });\r\n"
+                },
+                {
+                    "date": 1738996212596,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n const mongoose = require('mongoose');\r\n const AgentSchema = new mongoose.Schema({\r\n     name: String,\r\n     email: { type: String, unique: true },\r\n-    mobile: {type:String, un\r\n+    mobile: {type:String, unique: true},\r\n     password: String,\r\n     adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n \r\n });\r\n"
+                }
+            ],
+            "date": 1738923189655,
+            "name": "Commit-0",
+            "content": "const mongoose = require('mongoose');\r\nconst UserSchema = new mongoose.Schema({\r\n    name: String,\r\n    email: { type: String, unique: true },\r\n    mobile: String,\r\n    password: String,\r\n    role: { type: String, default: 'agent' }\r\n});\r\nmodule.exports = mongoose.model('User', UserSchema);\r\n"
+        }
+    ]
+}

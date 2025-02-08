@@ -1,0 +1,70 @@
+{
+    "sourceFile": "Backend/routes/authRoutes.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 13,
+            "patches": [
+                {
+                    "date": 1738647481685,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738690877323,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,9 +20,9 @@\n router.post('/register-account', async (req, res) => {\r\n     const { email, password,name,mobile } = req.body;\r\n     const user = await User.findOne({ email });\r\n     console.log(user)\r\n-    if (user) return res.status(400).json({ message: 'Email is Used' });\r\n+    if (user) return res.status(200).json({ message: 'Email is Used' });\r\n \r\n \r\n     const hashedPassword = await bcrypt.hash(password, 10);\r\n     const newUser = new User({ email, password: hashedPassword, name, mobile });\r\n"
+                },
+                {
+                    "date": 1738690928025,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,9 +20,9 @@\n router.post('/register-account', async (req, res) => {\r\n     const { email, password,name,mobile } = req.body;\r\n     const user = await User.findOne({ email });\r\n     console.log(user)\r\n-    if (user) return res.status(200).json({ message: 'Email is Used' });\r\n+    if (user) return res.status().json({ message: 'Email is Used' });\r\n \r\n \r\n     const hashedPassword = await bcrypt.hash(password, 10);\r\n     const newUser = new User({ email, password: hashedPassword, name, mobile });\r\n"
+                },
+                {
+                    "date": 1738690959335,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,9 +20,9 @@\n router.post('/register-account', async (req, res) => {\r\n     const { email, password,name,mobile } = req.body;\r\n     const user = await User.findOne({ email });\r\n     console.log(user)\r\n-    if (user) return res.status().json({ message: 'Email is Used' });\r\n+    if (user) return res.status(212).json({ message: 'Email is Used' });\r\n \r\n \r\n     const hashedPassword = await bcrypt.hash(password, 10);\r\n     const newUser = new User({ email, password: hashedPassword, name, mobile });\r\n@@ -30,8 +30,8 @@\n \r\n     console.log(newUser)\r\n     \r\n     const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n-    res.json({ token, newUser });\r\n+    res.status(201json({ token, newUser });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738691103337,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,8 +30,8 @@\n \r\n     console.log(newUser)\r\n     \r\n     const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n-    res.status(201json({ token, newUser });\r\n+    res.status(201).json({ token, newUser, });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738691108907,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,8 +30,8 @@\n \r\n     console.log(newUser)\r\n     \r\n     const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n-    res.status(201).json({ token, newUser, });\r\n+    res.status(201).json({ token, newUser,message });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738691117167,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,8 +30,8 @@\n \r\n     console.log(newUser)\r\n     \r\n     const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n-    res.status(201).json({ token, newUser,message });\r\n+    res.status(201).json({ token, newUser,message: });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738691133403,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,8 +30,8 @@\n \r\n     console.log(newUser)\r\n     \r\n     const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n-    res.status(201).json({ token, newUser,message: });\r\n+    res.status(201).json({ token, newUser,message:\"Account created successfully\" });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738695427554,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n router.post('/login', async (req, res) => {\r\n     const { email, password } = req.body;\r\n     const user = await User.findOne({ email });\r\n     \r\n-    if (!user) return res.status(400).json({ message: 'User not found' });\r\n+    if (!user) return res.status(404).json({ message: 'User not found' });\r\n \r\n     const isMatch = await bcrypt.compare(password, user.password);\r\n     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });\r\n \r\n"
+                },
+                {
+                    "date": 1738695454985,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n     const isMatch = await bcrypt.compare(password, user.password);\r\n     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });\r\n \r\n     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n-    res.json({ token, user });\r\n+    res.json({ token, user,message:\"Logged in successfully!!!\" });\r\n });\r\n \r\n router.post('/register-account', async (req, res) => {\r\n     const { email, password,name,mobile } = req.body;\r\n"
+                },
+                {
+                    "date": 1738695464701,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n     const isMatch = await bcrypt.compare(password, user.password);\r\n     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });\r\n \r\n     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n-    res.json({ token, user,message:\"Logged in successfully!!!\" });\r\n+    res.json({ token, message:\"Logged in successfully!!!\" });\r\n });\r\n \r\n router.post('/register-account', async (req, res) => {\r\n     const { email, password,name,mobile } = req.body;\r\n"
+                },
+                {
+                    "date": 1738695475650,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n     const isMatch = await bcrypt.compare(password, user.password);\r\n     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });\r\n \r\n     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n-    res.json({ token, message:\"Logged in successfully!!!\" });\r\n+    res.status(200).json({ token, message:\"Logged in successfully!!!\" });\r\n });\r\n \r\n router.post('/register-account', async (req, res) => {\r\n     const { email, password,name,mobile } = req.body;\r\n"
+                },
+                {
+                    "date": 1738695497787,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n \r\n     const isMatch = await bcrypt.compare(password, user.password);\r\n     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });\r\n \r\n-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });\r\n     res.status(200).json({ token, message:\"Logged in successfully!!!\" });\r\n });\r\n \r\n router.post('/register-account', async (req, res) => {\r\n"
+                },
+                {
+                    "date": 1738695528673,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,9 +29,9 @@\n     await newUser.save();\r\n \r\n     console.log(newUser)\r\n     \r\n-    const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n+    const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '7d' });\r\n     res.status(201).json({ token, newUser,message:\"Account created successfully\" });\r\n });\r\n \r\n module.exports = router;\r\n"
+                }
+            ],
+            "date": 1738647481685,
+            "name": "Commit-0",
+            "content": "const express = require('express');\r\nconst bcrypt = require('bcryptjs');\r\nconst jwt = require('jsonwebtoken');\r\nconst User = require('../models/User');\r\nconst router = express.Router();\r\n\r\nrouter.post('/login', async (req, res) => {\r\n    const { email, password } = req.body;\r\n    const user = await User.findOne({ email });\r\n    \r\n    if (!user) return res.status(400).json({ message: 'User not found' });\r\n\r\n    const isMatch = await bcrypt.compare(password, user.password);\r\n    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });\r\n\r\n    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n    res.json({ token, user });\r\n});\r\n\r\nrouter.post('/register-account', async (req, res) => {\r\n    const { email, password,name,mobile } = req.body;\r\n    const user = await User.findOne({ email });\r\n    console.log(user)\r\n    if (user) return res.status(400).json({ message: 'Email is Used' });\r\n\r\n\r\n    const hashedPassword = await bcrypt.hash(password, 10);\r\n    const newUser = new User({ email, password: hashedPassword, name, mobile });\r\n    await newUser.save();\r\n\r\n    console.log(newUser)\r\n    \r\n    const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });\r\n    res.json({ token, newUser });\r\n});\r\n\r\nmodule.exports = router;\r\n"
+        }
+    ]
+}

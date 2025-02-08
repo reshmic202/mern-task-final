@@ -1,0 +1,18 @@
+{
+    "sourceFile": "frontend/src/pages/CSVReader.jsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1738918155724,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1738918155724,
+            "name": "Commit-0",
+            "content": "import React, { useState } from \"react\";\r\nimport Papa from \"papaparse\";\r\n\r\nconst CSVReader = () => {\r\n  const [data, setData] = useState([]);\r\n\r\n  // Handle File Upload\r\n  const handleFileUpload = (event) => {\r\n    const file = event.target.files[0];\r\n\r\n    if (file) {\r\n      const reader = new FileReader();\r\n      reader.onload = ({ target }) => {\r\n        Papa.parse(target.result, {\r\n          header: true, // Parses CSV into JSON format\r\n          skipEmptyLines: true,\r\n          complete: (result) => {\r\n            setData(result.data);\r\n          },\r\n        });\r\n      };\r\n      reader.readAsText(file);\r\n    }\r\n  };\r\n\r\n  return (\r\n    <div>\r\n      <h2>Upload and Read CSV</h2>\r\n      <input type=\"file\" accept=\".csv\" onChange={handleFileUpload} />\r\n      \r\n      {data.length > 0 && (\r\n        <table border=\"1\">\r\n          <thead>\r\n            <tr>\r\n              {Object.keys(data[0]).map((key) => (\r\n                <th key={key}>{key}</th>\r\n              ))}\r\n            </tr>\r\n          </thead>\r\n          <tbody>\r\n            {data.map((row, index) => (\r\n              <tr key={index}>\r\n                {Object.values(row).map((value, idx) => (\r\n                  <td key={idx}>{value}</td>\r\n                ))}\r\n              </tr>\r\n            ))}\r\n          </tbody>\r\n        </table>\r\n      )}\r\n    </div>\r\n  );\r\n};\r\n\r\nexport default CSVReader;"
+        }
+    ]
+}

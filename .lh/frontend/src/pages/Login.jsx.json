@@ -1,0 +1,98 @@
+{
+    "sourceFile": "frontend/src/pages/Login.jsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 20,
+            "patches": [
+                {
+                    "date": 1738644929633,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738644955029,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -48,9 +48,14 @@\n             className=\"w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-300\"\r\n           >\r\n             Login\r\n           </button>\r\n-          \r\n+          <p className=\"text-gray-600 text-sm text-center mt-3\">\r\n+            Do have an account?{\" \"}\r\n+            <a href=\"/\" className=\"text-blue-500 font-semibold hover:underline\">\r\n+              Login here\r\n+            </a>\r\n+          </p>\r\n         </form>\r\n       </div>\r\n     </div>\r\n   );\r\n"
+                },
+                {
+                    "date": 1738644968202,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -49,9 +49,9 @@\n           >\r\n             Login\r\n           </button>\r\n           <p className=\"text-gray-600 text-sm text-center mt-3\">\r\n-            Do have an account?{\" \"}\r\n+            Don't have an account?{\" \"}\r\n             <a href=\"/\" className=\"text-blue-500 font-semibold hover:underline\">\r\n               Login here\r\n             </a>\r\n           </p>\r\n"
+                },
+                {
+                    "date": 1738644977902,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -51,9 +51,9 @@\n           </button>\r\n           <p className=\"text-gray-600 text-sm text-center mt-3\">\r\n             Don't have an account?{\" \"}\r\n             <a href=\"/\" className=\"text-blue-500 font-semibold hover:underline\">\r\n-              Login here\r\n+              Sign here\r\n             </a>\r\n           </p>\r\n         </form>\r\n       </div>\r\n"
+                },
+                {
+                    "date": 1738644985389,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -51,9 +51,9 @@\n           </button>\r\n           <p className=\"text-gray-600 text-sm text-center mt-3\">\r\n             Don't have an account?{\" \"}\r\n             <a href=\"/\" className=\"text-blue-500 font-semibold hover:underline\">\r\n-              Sign here\r\n+              SignIn here\r\n             </a>\r\n           </p>\r\n         </form>\r\n       </div>\r\n"
+                },
+                {
+                    "date": 1738644995209,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -51,9 +51,9 @@\n           </button>\r\n           <p className=\"text-gray-600 text-sm text-center mt-3\">\r\n             Don't have an account?{\" \"}\r\n             <a href=\"/\" className=\"text-blue-500 font-semibold hover:underline\">\r\n-              SignIn here\r\n+              SignUn here\r\n             </a>\r\n           </p>\r\n         </form>\r\n       </div>\r\n"
+                },
+                {
+                    "date": 1738645034882,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -50,9 +50,9 @@\n             Login\r\n           </button>\r\n           <p className=\"text-gray-600 text-sm text-center mt-3\">\r\n             Don't have an account?{\" \"}\r\n-            <a href=\"/\" className=\"text-blue-500 font-semibold hover:underline\">\r\n+            <a href=\"/signup\" className=\"text-blue-500 font-semibold hover:underline\">\r\n               SignUn here\r\n             </a>\r\n           </p>\r\n         </form>\r\n"
+                },
+                {
+                    "date": 1738647388729,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n       const { data } = await axios.post(\"/api/auth/login\", { email, password });\r\n       localStorage.setItem(\"token\", data.token);\r\n       window.location.href = \"/dashboard\";\r\n     } catch (error) {\r\n-      alert(\"Invalid credentials, please try again!\");\r\n+      // alert(\"Invalid credentials, please try again!\");\r\n     }\r\n   };\r\n \r\n   return (\r\n"
+                },
+                {
+                    "date": 1738647400160,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,8 +8,9 @@\n   const handleSubmit = async (e) => {\r\n     e.preventDefault();\r\n     try {\r\n       const { data } = await axios.post(\"/api/auth/login\", { email, password });\r\n+      clg\r\n       localStorage.setItem(\"token\", data.token);\r\n       window.location.href = \"/dashboard\";\r\n     } catch (error) {\r\n       // alert(\"Invalid credentials, please try again!\");\r\n"
+                },
+                {
+                    "date": 1738647405348,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,11 +8,11 @@\n   const handleSubmit = async (e) => {\r\n     e.preventDefault();\r\n     try {\r\n       const { data } = await axios.post(\"/api/auth/login\", { email, password });\r\n-      clg\r\n-      localStorage.setItem(\"token\", data.token);\r\n-      window.location.href = \"/dashboard\";\r\n+      console.log(data)\r\n+      // localStorage.setItem(\"token\", data.token);\r\n+      // window.location.href = \"/dashboard\";\r\n     } catch (error) {\r\n       // alert(\"Invalid credentials, please try again!\");\r\n     }\r\n   };\r\n"
+                },
+                {
+                    "date": 1738690560419,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,16 +6,16 @@\n   const [password, setPassword] = useState(\"\");\r\n \r\n   const handleSubmit = async (e) => {\r\n     e.preventDefault();\r\n-    try {\r\n-      const { data } = await axios.post(\"/api/auth/login\", { email, password });\r\n-      console.log(data)\r\n-      // localStorage.setItem(\"token\", data.token);\r\n-      // window.location.href = \"/dashboard\";\r\n-    } catch (error) {\r\n-      // alert(\"Invalid credentials, please try again!\");\r\n-    }\r\n+    // try {\r\n+    //   const { data } = await axios.post(\"/api/auth/login\", { email, password });\r\n+    //   console.log(data)\r\n+    //   // localStorage.setItem(\"token\", data.token);\r\n+    //   // window.location.href = \"/dashboard\";\r\n+    // } catch (error) {\r\n+    //   // alert(\"Invalid credentials, please try again!\");\r\n+    // }\r\n   };\r\n \r\n   return (\r\n     <div className=\"flex min-h-screen items-center justify-center bg-gray-100\">\r\n"
+                },
+                {
+                    "date": 1738695371449,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,8 +14,29 @@\n     //   // window.location.href = \"/dashboard\";\r\n     // } catch (error) {\r\n     //   // alert(\"Invalid credentials, please try again!\");\r\n     // }\r\n+    try {\r\n+          let res=await fetch(`${process.env.REACT_APP_API_URL}/auth/register-account`,{\r\n+            method:\"POST\",\r\n+            headers:{\r\n+              'content-type':\"application/json\"\r\n+            },\r\n+            body:JSON.stringify(signupData)\r\n+          })\r\n+          const status=res.status;\r\n+          res=await res.json();\r\n+          if(status===201){\r\n+            toast.success('Account created successfully')\r\n+            localStorage.setItem('token',JSON.stringify(res.token));\r\n+            window.location.href=\"/dashboard\";\r\n+          }else{\r\n+            toast.error(res.message)\r\n+          }\r\n+          console.log(res)\r\n+        } catch (error) {\r\n+          console.log(error.message)\r\n+        }\r\n   };\r\n \r\n   return (\r\n     <div className=\"flex min-h-screen items-center justify-center bg-gray-100\">\r\n"
+                },
+                {
+                    "date": 1738695378387,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     // } catch (error) {\r\n     //   // alert(\"Invalid credentials, please try again!\");\r\n     // }\r\n     try {\r\n-          let res=await fetch(`${process.env.REACT_APP_API_URL}/auth/register-account`,{\r\n+          let res=await fetch(`${process.env.REACT_APP_API_URL}/auth/login`,{\r\n             method:\"POST\",\r\n             headers:{\r\n               'content-type':\"application/json\"\r\n             },\r\n"
+                },
+                {
+                    "date": 1738695388573,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,9 +20,9 @@\n             method:\"POST\",\r\n             headers:{\r\n               'content-type':\"application/json\"\r\n             },\r\n-            body:JSON.stringify(signupData)\r\n+            body:JSON.stringify({email,password})\r\n           })\r\n           const status=res.status;\r\n           res=await res.json();\r\n           if(status===201){\r\n"
+                },
+                {
+                    "date": 1738695395870,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,5 @@\n+import { toast } from \"react-toastify\";\r\n import axios from \"../api\";\r\n import { useState } from \"react\";\r\n \r\n function Login() {\r\n"
+                },
+                {
+                    "date": 1738695409871,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,16 +7,8 @@\n   const [password, setPassword] = useState(\"\");\r\n \r\n   const handleSubmit = async (e) => {\r\n     e.preventDefault();\r\n-    // try {\r\n-    //   const { data } = await axios.post(\"/api/auth/login\", { email, password });\r\n-    //   console.log(data)\r\n-    //   // localStorage.setItem(\"token\", data.token);\r\n-    //   // window.location.href = \"/dashboard\";\r\n-    // } catch (error) {\r\n-    //   // alert(\"Invalid credentials, please try again!\");\r\n-    // }\r\n     try {\r\n           let res=await fetch(`${process.env.REACT_APP_API_URL}/auth/login`,{\r\n             method:\"POST\",\r\n             headers:{\r\n"
+                },
+                {
+                    "date": 1738695538374,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,9 +17,9 @@\n             body:JSON.stringify({email,password})\r\n           })\r\n           const status=res.status;\r\n           res=await res.json();\r\n-          if(status===201){\r\n+          if(status===200){\r\n             toast.success('Account created successfully')\r\n             localStorage.setItem('token',JSON.stringify(res.token));\r\n             window.location.href=\"/dashboard\";\r\n           }else{\r\n"
+                },
+                {
+                    "date": 1738695545538,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,9 +18,9 @@\n           })\r\n           const status=res.status;\r\n           res=await res.json();\r\n           if(status===200){\r\n-            toast.success('Account created successfully')\r\n+            toast.success(res.message)\r\n             localStorage.setItem('token',JSON.stringify(res.token));\r\n             window.location.href=\"/dashboard\";\r\n           }else{\r\n             toast.error(res.message)\r\n"
+                },
+                {
+                    "date": 1738696183782,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,8 @@\n \r\n   const handleSubmit = async (e) => {\r\n     e.preventDefault();\r\n     try {\r\n-          let res=await fetch(`${process.env.REACT_APP_API_URL}/auth/login`,{\r\n             method:\"POST\",\r\n             headers:{\r\n               'content-type':\"application/json\"\r\n             },\r\n@@ -44,9 +43,10 @@\n               placeholder=\"Enter your email\"\r\n               value={email}\r\n               onChange={(e) => setEmail(e.target.value)}\r\n               required\r\n-            />\r\n+            />          let res=await fetch(`${process.env.REACT_APP_API_URL}/auth/login`,{\r\n+\r\n           </div>\r\n           <div>\r\n             <label className=\"block text-gray-700 font-medium\">Password</label>\r\n             <input\r\n"
+                },
+                {
+                    "date": 1738996071368,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { toast } from \"react-toastify\";\r\n-import axios from \"../api\";\r\n+\r\n import { useState } from \"react\";\r\n \r\n function Login() {\r\n   const [email, setEmail] = useState(\"\");\r\n@@ -8,8 +8,9 @@\n \r\n   const handleSubmit = async (e) => {\r\n     e.preventDefault();\r\n     try {\r\n+          let res=await fetch(`${process.env.REACT_APP_API_URL}/auth/login`,{\r\n             method:\"POST\",\r\n             headers:{\r\n               'content-type':\"application/json\"\r\n             },\r\n@@ -43,10 +44,10 @@\n               placeholder=\"Enter your email\"\r\n               value={email}\r\n               onChange={(e) => setEmail(e.target.value)}\r\n               required\r\n-            />          let res=await fetch(`${process.env.REACT_APP_API_URL}/auth/login`,{\r\n-\r\n+              \r\n+            />\r\n           </div>\r\n           <div>\r\n             <label className=\"block text-gray-700 font-medium\">Password</label>\r\n             <input\r\n"
+                },
+                {
+                    "date": 1738997159196,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,5 @@\n import { toast } from \"react-toastify\";\r\n-\r\n import { useState } from \"react\";\r\n \r\n function Login() {\r\n   const [email, setEmail] = useState(\"\");\r\n@@ -67,9 +66,9 @@\n           </button>\r\n           <p className=\"text-gray-600 text-sm text-center mt-3\">\r\n             Don't have an account?{\" \"}\r\n             <a href=\"/signup\" className=\"text-blue-500 font-semibold hover:underline\">\r\n-              SignUn here\r\n+              SignUp here\r\n             </a>\r\n           </p>\r\n         </form>\r\n       </div>\r\n"
+                }
+            ],
+            "date": 1738644929633,
+            "name": "Commit-0",
+            "content": "import axios from \"../api\";\r\nimport { useState } from \"react\";\r\n\r\nfunction Login() {\r\n  const [email, setEmail] = useState(\"\");\r\n  const [password, setPassword] = useState(\"\");\r\n\r\n  const handleSubmit = async (e) => {\r\n    e.preventDefault();\r\n    try {\r\n      const { data } = await axios.post(\"/api/auth/login\", { email, password });\r\n      localStorage.setItem(\"token\", data.token);\r\n      window.location.href = \"/dashboard\";\r\n    } catch (error) {\r\n      alert(\"Invalid credentials, please try again!\");\r\n    }\r\n  };\r\n\r\n  return (\r\n    <div className=\"flex min-h-screen items-center justify-center bg-gray-100\">\r\n      <div className=\"w-full max-w-md p-8 bg-white shadow-lg rounded-2xl\">\r\n        <h2 className=\"text-2xl font-bold text-center text-gray-800 mb-6\">Admin Login</h2>\r\n        <form onSubmit={handleSubmit} className=\"space-y-4\">\r\n          <div>\r\n            <label className=\"block text-gray-700 font-medium\">Email</label>\r\n            <input\r\n              type=\"email\"\r\n              className=\"w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none\"\r\n              placeholder=\"Enter your email\"\r\n              value={email}\r\n              onChange={(e) => setEmail(e.target.value)}\r\n              required\r\n            />\r\n          </div>\r\n          <div>\r\n            <label className=\"block text-gray-700 font-medium\">Password</label>\r\n            <input\r\n              type=\"password\"\r\n              className=\"w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none\"\r\n              placeholder=\"Enter your password\"\r\n              value={password}\r\n              onChange={(e) => setPassword(e.target.value)}\r\n              required\r\n            />\r\n          </div>\r\n          <button\r\n            type=\"submit\"\r\n            className=\"w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-300\"\r\n          >\r\n            Login\r\n          </button>\r\n          \r\n        </form>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n\r\nexport default Login;\r\n"
+        }
+    ]
+}

@@ -1,0 +1,210 @@
+{
+    "sourceFile": "Backend/routes/listRoutes.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 48,
+            "patches": [
+                {
+                    "date": 1738696771352,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738696918758,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,34 +1,78 @@\n const express = require('express');\r\n const multer = require('multer');\r\n const csvParser = require('csv-parser');\r\n+const xlsx = require('xlsx');\r\n const fs = require('fs');\r\n const List = require('../models/List');\r\n const User = require('../models/User');\r\n const router = express.Router();\r\n \r\n-const upload = multer({ dest: 'uploads/' });\r\n+const upload = multer({\r\n+    dest: 'uploads/',\r\n+    fileFilter: (req, file, cb) => {\r\n+        const allowedTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];\r\n+        if (!allowedTypes.includes(file.mimetype)) {\r\n+            return cb(new Error('Only CSV, XLSX, or XLS files are allowed'), false);\r\n+        }\r\n+        cb(null, true);\r\n+    }\r\n+});\r\n \r\n router.post('/upload-csv', upload.single('file'), async (req, res) => {\r\n-    const filePath = req.file.path;\r\n-    const agents = await User.find({ role: 'agent' });\r\n-    if (agents.length === 0) return res.status(400).json({ message: 'No agents found' });\r\n+    try {\r\n+        if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n-    let entries = [];\r\n-    fs.createReadStream(filePath)\r\n-        .pipe(csvParser())\r\n-        .on('data', (row) => entries.push(row))\r\n-        .on('end', async () => {\r\n-            const chunkSize = Math.ceil(entries.length / agents.length);\r\n-            let index = 0;\r\n+        const agents = await User.find({ role: 'agent' }).limit(5);\r\n+        if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });\r\n \r\n-            for (const agent of agents) {\r\n-                const assignedData = entries.splice(0, chunkSize);\r\n-                for (const item of assignedData) {\r\n-                    await List.create({ agentId: agent._id, ...item });\r\n-                }\r\n+        const filePath = req.file.path;\r\n+        let entries = [];\r\n+\r\n+        if (req.file.mimetype === 'text/csv') {\r\n+            fs.createReadStream(filePath)\r\n+                .pipe(csvParser())\r\n+                .on('data', (row) => {\r\n+                    if (!row.FirstName || !row.Phone || !row.Notes) {\r\n+                        return res.status(400).json({ message: 'Invalid CSV format. Required columns: FirstName, Phone, Notes' });\r\n+                    }\r\n+                    entries.push(row);\r\n+                })\r\n+                .on('end', () => distributeTasks(entries, agents, res));\r\n+        } else {\r\n+            const workbook = xlsx.readFile(filePath);\r\n+            const sheet = workbook.Sheets[workbook.SheetNames[0]];\r\n+            entries = xlsx.utils.sheet_to_json(sheet);\r\n+\r\n+            if (!entries.every(row => row.FirstName && row.Phone && row.Notes)) {\r\n+                return res.status(400).json({ message: 'Invalid Excel format. Required columns: FirstName, Phone, Notes' });\r\n             }\r\n-            res.json({ message: 'List distributed successfully' });\r\n-        });\r\n+\r\n+            distributeTasks(entries, agents, res);\r\n+        }\r\n+    } catch (error) {\r\n+        res.status(500).json({ message: 'Server error', error: error.message });\r\n+    }\r\n });\r\n \r\n+async function distributeTasks(entries, agents, res) {\r\n+    try {\r\n+        const chunkSize = Math.floor(entries.length / 5);\r\n+        let remainder = entries.length % 5;\r\n+        let index = 0;\r\n+\r\n+        for (const agent of agents) {\r\n+            const assignedTasks = entries.splice(0, chunkSize + (remainder > 0 ? 1 : 0));\r\n+            remainder--;\r\n+\r\n+            for (const item of assignedTasks) {\r\n+                await List.create({ agentId: agent._id, ...item });\r\n+            }\r\n+        }\r\n+\r\n+        res.json({ message: 'List distributed successfully' });\r\n+    } catch (error) {\r\n+        res.status(500).json({ message: 'Error distributing tasks', error: error.message });\r\n+    }\r\n+}\r\n+\r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738697086321,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,9 +22,9 @@\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n         const agents = await User.find({ role: 'agent' }).limit(5);\r\n-        if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });\r\n+        // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });\r\n \r\n         const filePath = req.file.path;\r\n         let entries = [];\r\n \r\n"
+                },
+                {
+                    "date": 1738697175798,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,9 +22,9 @@\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n         const agents = await User.find({ role: 'agent' }).limit(5);\r\n-        // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });\r\n+        // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n \r\n         const filePath = req.file.path;\r\n         let entries = [];\r\n \r\n"
+                },
+                {
+                    "date": 1738697231375,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -74,5 +74,7 @@\n         res.status(500).json({ message: 'Error distributing tasks', error: error.message });\r\n     }\r\n }\r\n \r\n+\r\n+\r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738697245520,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -74,7 +74,10 @@\n         res.status(500).json({ message: 'Error distributing tasks', error: error.message });\r\n     }\r\n }\r\n \r\n+router.get('/count', async (req, res) => {\r\n+    const newAgent = await  User.find({role: 'agent'});\r\n+    res.json({ count:newAgent.length });\r\n+});\r\n \r\n-\r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738697250711,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -74,9 +74,9 @@\n         res.status(500).json({ message: 'Error distributing tasks', error: error.message });\r\n     }\r\n }\r\n \r\n-router.get('/count', async (req, res) => {\r\n+router.get('/count/:token', async (req, res) => {\r\n     const newAgent = await  User.find({role: 'agent'});\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738697257314,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -75,8 +75,9 @@\n     }\r\n }\r\n \r\n router.get('/count/:token', async (req, res) => {\r\n+    \r\n     const newAgent = await  User.find({role: 'agent'});\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738697267686,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -74,11 +74,11 @@\n         res.status(500).json({ message: 'Error distributing tasks', error: error.message });\r\n     }\r\n }\r\n \r\n-router.get('/count/:token', async (req, res) => {\r\n-    \r\n-    const newAgent = await  User.find({role: 'agent'});\r\n+router.get('/count', async (req, res) => {\r\n+\r\n+    const newAgent = await  List.find({role: 'agent'});\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738918842754,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -75,10 +75,9 @@\n     }\r\n }\r\n \r\n router.get('/count', async (req, res) => {\r\n-\r\n-    const newAgent = await  List.find({role: 'agent'});\r\n+    const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738918849940,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -79,5 +79,10 @@\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n+router.get('/', async (req, res) => {\r\n+    const newAgent = await  List.find();\r\n+    res.json({ count:newAgent.length });\r\n+});\r\n+\r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738918860783,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -79,9 +79,9 @@\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n-router.get('/', async (req, res) => {\r\n+router.get('/agent', async (req, res) => {\r\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738918866837,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -79,9 +79,9 @@\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n-router.get('/agent', async (req, res) => {\r\n+router.get('/lis', async (req, res) => {\r\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738918873857,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -79,9 +79,9 @@\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n-router.get('/lis', async (req, res) => {\r\n+router.get('/list-of-current-', async (req, res) => {\r\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738918879086,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -79,9 +79,9 @@\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n-router.get('/list-of-current-', async (req, res) => {\r\n+router.get('/list-of-current-agent/\"', async (req, res) => {\r\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738918897742,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -79,9 +79,10 @@\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n-router.get('/list-of-current-agent/\"', async (req, res) => {\r\n+router.get('/list-of-current-agent/:id', async (req, res) => {\r\n+    const id=req.params.id;\r\n     const newAgent = await  List.find();\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738918903280,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -81,9 +81,11 @@\n });\r\n \r\n router.get('/list-of-current-agent/:id', async (req, res) => {\r\n     const id=req.params.id;\r\n-    const newAgent = await  List.find();\r\n+    const newAgent = await  List.find({\r\n+        add\r\n+    });\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738919000760,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -82,9 +82,9 @@\n \r\n router.get('/list-of-current-agent/:id', async (req, res) => {\r\n     const id=req.params.id;\r\n     const newAgent = await  List.find({\r\n-        add\r\n+        agentId:\r\n     });\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738919006363,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -82,10 +82,11 @@\n \r\n router.get('/list-of-current-agent/:id', async (req, res) => {\r\n     const id=req.params.id;\r\n     const newAgent = await  List.find({\r\n-        agentId:\r\n+        agentId:id\r\n     });\r\n+    console.log(all)\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738919108112,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -81,8 +81,9 @@\n });\r\n \r\n router.get('/list-of-current-agent/:id', async (req, res) => {\r\n     const id=req.params.id;\r\n+    clg\r\n     const newAgent = await  List.find({\r\n         agentId:id\r\n     });\r\n     console.log(all)\r\n"
+                },
+                {
+                    "date": 1738919151751,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -81,13 +81,13 @@\n });\r\n \r\n router.get('/list-of-current-agent/:id', async (req, res) => {\r\n     const id=req.params.id;\r\n-    clg\r\n+    console.log(id)\r\n     const newAgent = await  List.find({\r\n         agentId:id\r\n     });\r\n-    console.log(all)\r\n+    console.log(newAgent)\r\n     res.json({ count:newAgent.length });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738919323152,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -86,8 +86,8 @@\n     const newAgent = await  List.find({\r\n         agentId:id\r\n     });\r\n     console.log(newAgent)\r\n-    res.json({ count:newAgent.length });\r\n+    res.json({ count:newAgent });\r\n });\r\n \r\n module.exports = router;\r\n"
+                },
+                {
+                    "date": 1738919528550,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -84,9 +84,9 @@\n     const id=req.params.id;\r\n     console.log(id)\r\n     const newAgent = await  List.find({\r\n         agentId:id\r\n-    });\r\n+    }).pouplaye;\r\n     console.log(newAgent)\r\n     res.json({ count:newAgent });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738919539664,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -84,9 +84,9 @@\n     const id=req.params.id;\r\n     console.log(id)\r\n     const newAgent = await  List.find({\r\n         agentId:id\r\n-    }).pouplaye;\r\n+    }).pouplate(\"agentId\");\r\n     console.log(newAgent)\r\n     res.json({ count:newAgent });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738919712548,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -84,9 +84,9 @@\n     const id=req.params.id;\r\n     console.log(id)\r\n     const newAgent = await  List.find({\r\n         agentId:id\r\n-    }).pouplate(\"agentId\");\r\n+    }).populate(\"agentId\");\r\n     console.log(newAgent)\r\n     res.json({ count:newAgent });\r\n });\r\n \r\n"
+                },
+                {
+                    "date": 1738919834473,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -63,8 +63,10 @@\n         for (const agent of agents) {\r\n             const assignedTasks = entries.splice(0, chunkSize + (remainder > 0 ? 1 : 0));\r\n             remainder--;\r\n \r\n+            clg\r\n+\r\n             for (const item of assignedTasks) {\r\n                 await List.create({ agentId: agent._id, ...item });\r\n             }\r\n         }\r\n"
+                },
+                {
+                    "date": 1738919839742,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -63,9 +63,9 @@\n         for (const agent of agents) {\r\n             const assignedTasks = entries.splice(0, chunkSize + (remainder > 0 ? 1 : 0));\r\n             remainder--;\r\n \r\n-            clg\r\n+            console.log(agent)\r\n \r\n             for (const item of assignedTasks) {\r\n                 await List.create({ agentId: agent._id, ...item });\r\n             }\r\n"
+                },
+                {
+                    "date": 1738919891440,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -63,11 +63,11 @@\n         for (const agent of agents) {\r\n             const assignedTasks = entries.splice(0, chunkSize + (remainder > 0 ? 1 : 0));\r\n             remainder--;\r\n \r\n-            console.log(agent)\r\n-\r\n+            \r\n             for (const item of assignedTasks) {\r\n+                console.log(agent)\r\n                 await List.create({ agentId: agent._id, ...item });\r\n             }\r\n         }\r\n \r\n"
+                },
+                {
+                    "date": 1738919929028,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -65,10 +65,10 @@\n             remainder--;\r\n \r\n             \r\n             for (const item of assignedTasks) {\r\n-                console.log(agent)\r\n-                await List.create({ agentId: agent._id, ...item });\r\n+                console.log(item)\r\n+                await List.create({ agentId: agent._id, });\r\n             }\r\n         }\r\n \r\n         res.json({ message: 'List distributed successfully' });\r\n"
+                },
+                {
+                    "date": 1738919940608,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,9 @@\n \r\n             \r\n             for (const item of assignedTasks) {\r\n                 console.log(item)\r\n-                await List.create({ agentId: agent._id, });\r\n+                await List.create({ agentId: agent._id, fir});\r\n             }\r\n         }\r\n \r\n         res.json({ message: 'List distributed successfully' });\r\n"
+                },
+                {
+                    "date": 1738919946761,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,9 @@\n \r\n             \r\n             for (const item of assignedTasks) {\r\n                 console.log(item)\r\n-                await List.create({ agentId: agent._id, fir});\r\n+                await List.create({ agentId: agent._id, firstname:item.firstname});\r\n             }\r\n         }\r\n \r\n         res.json({ message: 'List distributed successfully' });\r\n"
+                },
+                {
+                    "date": 1738919952971,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,9 @@\n \r\n             \r\n             for (const item of assignedTasks) {\r\n                 console.log(item)\r\n-                await List.create({ agentId: agent._id, firstname:item.firstname});\r\n+                await List.create({ agentId: agent._id, firstname:item.Firstname});\r\n             }\r\n         }\r\n \r\n         res.json({ message: 'List distributed successfully' });\r\n"
+                },
+                {
+                    "date": 1738919958556,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,9 @@\n \r\n             \r\n             for (const item of assignedTasks) {\r\n                 console.log(item)\r\n-                await List.create({ agentId: agent._id, firstname:item.Firstname});\r\n+                await List.create({ agentId: agent._id, firstname:item.Firstname,ph});\r\n             }\r\n         }\r\n \r\n         res.json({ message: 'List distributed successfully' });\r\n"
+                },
+                {
+                    "date": 1738919967446,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,9 @@\n \r\n             \r\n             for (const item of assignedTasks) {\r\n                 console.log(item)\r\n-                await List.create({ agentId: agent._id, firstname:item.Firstname,ph});\r\n+                await List.create({ agentId: agent._id, firstname:item.Firstname,phone:item.Phone,});\r\n             }\r\n         }\r\n \r\n         res.json({ message: 'List distributed successfully' });\r\n"
+                },
+                {
+                    "date": 1738919976523,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,9 @@\n \r\n             \r\n             for (const item of assignedTasks) {\r\n                 console.log(item)\r\n-                await List.create({ agentId: agent._id, firstname:item.Firstname,phone:item.Phone,});\r\n+                await List.create({ agentId: agent._id, firstname:item.Firstname,phone:item.Phone,notes:item.Notes});\r\n             }\r\n         }\r\n \r\n         res.json({ message: 'List distributed successfully' });\r\n"
+                },
+                {
+                    "date": 1738920105606,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -66,9 +66,9 @@\n \r\n             \r\n             for (const item of assignedTasks) {\r\n                 console.log(item)\r\n-                await List.create({ agentId: agent._id, firstname:item.Firstname,phone:item.Phone,notes:item.Notes});\r\n+                await List.create({ agentId: agent._id, firstname:item.FirstName,phone:item.Phone,notes:item.Notes});\r\n             }\r\n         }\r\n \r\n         res.json({ message: 'List distributed successfully' });\r\n"
+                },
+                {
+                    "date": 1738926545144,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -63,9 +63,9 @@\n         for (const agent of agents) {\r\n             const assignedTasks = entries.splice(0, chunkSize + (remainder > 0 ? 1 : 0));\r\n             remainder--;\r\n \r\n-            \r\n+            clg\r\n             for (const item of assignedTasks) {\r\n                 console.log(item)\r\n                 await List.create({ agentId: agent._id, firstname:item.FirstName,phone:item.Phone,notes:item.Notes});\r\n             }\r\n"
+                },
+                {
+                    "date": 1738926578730,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -63,9 +63,9 @@\n         for (const agent of agents) {\r\n             const assignedTasks = entries.splice(0, chunkSize + (remainder > 0 ? 1 : 0));\r\n             remainder--;\r\n \r\n-            clg\r\n+            console.log(assignedTasks)\r\n             for (const item of assignedTasks) {\r\n                 console.log(item)\r\n                 await List.create({ agentId: agent._id, firstname:item.FirstName,phone:item.Phone,notes:item.Notes});\r\n             }\r\n"
+                },
+                {
+                    "date": 1738926935000,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,8 +22,9 @@\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n         const agents = await User.find({ role: 'agent' }).limit(5);\r\n+        \r\n         // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n \r\n         const filePath = req.file.path;\r\n         let entries = [];\r\n"
+                },
+                {
+                    "date": 1738926947712,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,10 +21,10 @@\n router.post('/upload-csv', upload.single('file'), async (req, res) => {\r\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n-        const agents = await User.find({ role: 'agent' }).limit(5);\r\n-        \r\n+        const agents = await .find({ role: 'agent' }).limit(5);\r\n+\r\n         // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n \r\n         const filePath = req.file.path;\r\n         let entries = [];\r\n"
+                },
+                {
+                    "date": 1738926953213,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,9 @@\n const xlsx = require('xlsx');\r\n const fs = require('fs');\r\n const List = require('../models/List');\r\n const User = require('../models/User');\r\n+const Agent = require('../models/Agent');\r\n const router = express.Router();\r\n \r\n const upload = multer({\r\n     dest: 'uploads/',\r\n@@ -21,9 +22,9 @@\n router.post('/upload-csv', upload.single('file'), async (req, res) => {\r\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n-        const agents = await .find({ role: 'agent' }).limit(5);\r\n+        const agents = await Agent.find({ role: 'agent' }).limit(5);\r\n \r\n         // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n \r\n         const filePath = req.file.path;\r\n"
+                },
+                {
+                    "date": 1738926969649,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,9 +22,9 @@\n router.post('/upload-csv', upload.single('file'), async (req, res) => {\r\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n-        const agents = await Agent.find({ role: 'agent' }).limit(5);\r\n+        const agents = await Agent.find({ }).limit(5);\r\n \r\n         // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n \r\n         const filePath = req.file.path;\r\n"
+                },
+                {
+                    "date": 1738926976924,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,9 +22,9 @@\n router.post('/upload-csv', upload.single('file'), async (req, res) => {\r\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n-        const agents = await Agent.find({ }).limit(5);\r\n+        const agents = await Agent.find({ adminId}).limit(5);\r\n \r\n         // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n \r\n         const filePath = req.file.path;\r\n"
+                },
+                {
+                    "date": 1738926986401,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,9 +22,9 @@\n router.post('/upload-csv', upload.single('file'), async (req, res) => {\r\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n-        const agents = await Agent.find({ adminId}).limit(5);\r\n+        const agents = await Agent.find({ adminId=}).limit(5);\r\n \r\n         // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n \r\n         const filePath = req.file.path;\r\n"
+                },
+                {
+                    "date": 1738926995299,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,9 +22,9 @@\n router.post('/upload-csv', upload.single('file'), async (req, res) => {\r\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n-        const agents = await Agent.find({ adminId=}).limit(5);\r\n+        const agents = await Agent.find({ adminI:}).limit(5);\r\n \r\n         // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n \r\n         const filePath = req.file.path;\r\n"
+                },
+                {
+                    "date": 1738927028635,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,9 +18,9 @@\n         cb(null, true);\r\n     }\r\n });\r\n \r\n-router.post('/upload-csv', upload.single('file'), async (req, res) => {\r\n+router.post('/upload-csv/:', upload.single('file'), async (req, res) => {\r\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n         const agents = await Agent.find({ adminI:}).limit(5);\r\n"
+                },
+                {
+                    "date": 1738927034127,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,9 +18,9 @@\n         cb(null, true);\r\n     }\r\n });\r\n \r\n-router.post('/upload-csv/:', upload.single('file'), async (req, res) => {\r\n+router.post('/upload-csv/:token', upload.single('file'), async (req, res) => {\r\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n         const agents = await Agent.find({ adminI:}).limit(5);\r\n"
+                },
+                {
+                    "date": 1738927388642,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,14 +22,10 @@\n router.post('/upload-csv/:token', upload.single('file'), async (req, res) => {\r\n     try {\r\n         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n \r\n-        Here are my TeamViewer ID number and connection password.\r\n-Please use them to start a remote support session with me.\r\n+        \r\n \r\n-TeamViewer ID: 1 840 028 417\r\n-Your password: 1rybxuzn\r\n-\r\n         const agents = await Agent.find({ adminI:}).limit(5);\r\n \r\n         // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n \r\n"
+                },
+                {
+                    "date": 1738927817413,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,102 @@\n+const express = require('express');\r\n+const multer = require('multer');\r\n+const csvParser = require('csv-parser');\r\n+const xlsx = require('xlsx');\r\n+const fs = require('fs');\r\n+const List = require('../models/List');\r\n+const User = require('../models/User');\r\n+const Agent = require('../models/Agent');\r\n+const jwt = require('jsonwebtoken');\r\n+\r\n+const router = express.Router();\r\n+\r\n+const upload = multer({\r\n+    dest: 'uploads/',\r\n+    fileFilter: (req, file, cb) => {\r\n+        const allowedTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];\r\n+        if (!allowedTypes.includes(file.mimetype)) {\r\n+            return cb(new Error('Only CSV, XLSX, or XLS files are allowed'), false);\r\n+        }\r\n+        cb(null, true);\r\n+    }\r\n+});\r\n+\r\n+router.post('/upload-csv/:token', upload.single('file'), async (req, res) => {\r\n+    try {\r\n+        if (!req.file) return res.status(400).json({ message: 'No file uploaded' });\r\n+\r\n+         const agentId = req.params.id;\r\n+            const decodedId =jwt.decode(agentId,process.env.JWT_SECRET);\r\n+\r\n+        const agents = await Agent.find({ adminI:decodedId.id}).limit(5);\r\n+\r\n+        // if (agents.length < 5) return res.status(400).json({ message: 'At least 5 agents are required' });rs\r\n+\r\n+        const filePath = req.file.path;\r\n+        let entries = [];\r\n+\r\n+        if (req.file.mimetype === 'text/csv') {\r\n+            fs.createReadStream(filePath)\r\n+                .pipe(csvParser())\r\n+                .on('data', (row) => {\r\n+                    if (!row.FirstName || !row.Phone || !row.Notes) {\r\n+                        return res.status(400).json({ message: 'Invalid CSV format. Required columns: FirstName, Phone, Notes' });\r\n+                    }\r\n+                    entries.push(row);\r\n+                })\r\n+                .on('end', () => distributeTasks(entries, agents, res));\r\n+        } else {\r\n+            const workbook = xlsx.readFile(filePath);\r\n+            const sheet = workbook.Sheets[workbook.SheetNames[0]];\r\n+            entries = xlsx.utils.sheet_to_json(sheet);\r\n+\r\n+            if (!entries.every(row => row.FirstName && row.Phone && row.Notes)) {\r\n+                return res.status(400).json({ message: 'Invalid Excel format. Required columns: FirstName, Phone, Notes' });\r\n+            }\r\n+\r\n+            distributeTasks(entries, agents, res);\r\n+        }\r\n+    } catch (error) {\r\n+        res.status(500).json({ message: 'Server error', error: error.message });\r\n+    }\r\n+});\r\n+\r\n+async function distributeTasks(entries, agents, res) {\r\n+    try {\r\n+        const chunkSize = Math.floor(entries.length / 5);\r\n+        let remainder = entries.length % 5;\r\n+        let index = 0;\r\n+\r\n+        for (const agent of agents) {\r\n+            const assignedTasks = entries.splice(0, chunkSize + (remainder > 0 ? 1 : 0));\r\n+            remainder--;\r\n+\r\n+            console.log(assignedTasks)\r\n+            for (const item of assignedTasks) {\r\n+                console.log(item)\r\n+                await List.create({ agentId: agent._id, firstname:item.FirstName,phone:item.Phone,notes:item.Notes});\r\n+            }\r\n+        }\r\n+\r\n+        res.json({ message: 'List distributed successfully' });\r\n+    } catch (error) {\r\n+        res.status(500).json({ message: 'Error distributing tasks', error: error.message });\r\n+    }\r\n+}\r\n+\r\n+router.get('/count', async (req, res) => {\r\n+    const newAgent = await  List.find();\r\n+    res.json({ count:newAgent.length });\r\n+});\r\n+\r\n+router.get('/list-of-current-agent/:id', async (req, res) => {\r\n+    const id=req.params.id;\r\n+    console.log(id)\r\n+    const newAgent = await  List.find({\r\n+        agentId:id\r\n+    }).populate(\"agentId\");\r\n+    console.log(newAgent)\r\n+    res.json({ count:newAgent });\r\n+});\r\n+\r\n+module.exports = router;\r\n"
+                }
+            ],
+            "date": 1738696771352,
+            "name": "Commit-0",
+            "content": "const express = require('express');\r\nconst multer = require('multer');\r\nconst csvParser = require('csv-parser');\r\nconst fs = require('fs');\r\nconst List = require('../models/List');\r\nconst User = require('../models/User');\r\nconst router = express.Router();\r\n\r\nconst upload = multer({ dest: 'uploads/' });\r\n\r\nrouter.post('/upload-csv', upload.single('file'), async (req, res) => {\r\n    const filePath = req.file.path;\r\n    const agents = await User.find({ role: 'agent' });\r\n    if (agents.length === 0) return res.status(400).json({ message: 'No agents found' });\r\n\r\n    let entries = [];\r\n    fs.createReadStream(filePath)\r\n        .pipe(csvParser())\r\n        .on('data', (row) => entries.push(row))\r\n        .on('end', async () => {\r\n            const chunkSize = Math.ceil(entries.length / agents.length);\r\n            let index = 0;\r\n\r\n            for (const agent of agents) {\r\n                const assignedData = entries.splice(0, chunkSize);\r\n                for (const item of assignedData) {\r\n                    await List.create({ agentId: agent._id, ...item });\r\n                }\r\n            }\r\n            res.json({ message: 'List distributed successfully' });\r\n        });\r\n});\r\n\r\nmodule.exports = router;\r\n"
+        }
+    ]
+}

@@ -1,0 +1,26 @@
+{
+    "sourceFile": "Backend/models/List.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1738928355877,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738928361069,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n const mongoose = require('mongoose');\r\n const ListSchema = new mongoose.Schema({\r\n+    agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Agent' },\r\n     agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n-    agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n     firstname: String,\r\n     phone: String,\r\n     notes: String\r\n });\r\n"
+                },
+                {
+                    "date": 1738928370195,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n const mongoose = require('mongoose');\r\n const ListSchema = new mongoose.Schema({\r\n     agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Agent' },\r\n-    agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n+    ad: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n     firstname: String,\r\n     phone: String,\r\n     notes: String\r\n });\r\n"
+                }
+            ],
+            "date": 1738928355877,
+            "name": "Commit-0",
+            "content": "const mongoose = require('mongoose');\r\nconst ListSchema = new mongoose.Schema({\r\n    agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n    agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },\r\n    firstname: String,\r\n    phone: String,\r\n    notes: String\r\n});\r\nmodule.exports = mongoose.model('List', ListSchema);\r\n"
+        }
+    ]
+}

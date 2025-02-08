@@ -1,0 +1,74 @@
+{
+    "sourceFile": "frontend/src/pages/ListofAgentsListed.jsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 14,
+            "patches": [
+                {
+                    "date": 1738991997120,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1738992010713,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \r\n const ListofAgentsListed = () => {\r\n   return (\r\n     <div>\r\n-      \r\n+      {item}\r\n     </div>\r\n   )\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1738992534751,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \r\n const ListofAgentsListed = () => {\r\n   return (\r\n     <div>\r\n-      {item}\r\n+      {item,name}\r\n     </div>\r\n   )\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1738992540572,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import React from 'react'\r\n \r\n-const ListofAgentsListed = () => {\r\n+const ListofAgentsListed = ({i}) => {\r\n   return (\r\n     <div>\r\n       {item,name}\r\n     </div>\r\n"
+                },
+                {
+                    "date": 1738992546852,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import React from 'react'\r\n \r\n-const ListofAgentsListed = ({i}) => {\r\n+const ListofAgentsListed = ({item,nam}) => {\r\n   return (\r\n     <div>\r\n       {item,name}\r\n     </div>\r\n"
+                },
+                {
+                    "date": 1738992555538,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,10 @@\n import React from 'react'\r\n \r\n-const ListofAgentsListed = ({item,nam}) => {\r\n+const ListofAgentsListed = ({item,name}) => {\r\n   return (\r\n     <div>\r\n-      {item,name}\r\n+      }\r\n     </div>\r\n   )\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1738992566670,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \r\n const ListofAgentsListed = ({item,name}) => {\r\n   return (\r\n     <div>\r\n-      }\r\n+      <h1>jfjdhdjfh</h1>\r\n     </div>\r\n   )\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1738992887000,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,16 @@\n \r\n const ListofAgentsListed = ({item,name}) => {\r\n   return (\r\n     <div>\r\n-      <h1>jfjdhdjfh</h1>\r\n+      <li\r\n+                      key={item._id}\r\n+                      className=\"bg-gray-100 p-3 rounded-lg shadow-md flex justify-between cursor-pointer items-center mb-3 w-full\"\r\n+                    >\r\n+                      <span className=\"font-medium text-gray-800\">{item.firstname}</span>\r\n+                      <span className=\"text-gray-600\">{item.phone}</span>\r\n+                      <span className=\"text-gray-600\">{item.notes}</span>\r\n+                    </li>\r\n     </div>\r\n   )\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1738993098811,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,18 +1,18 @@\n import React from 'react'\r\n \r\n-const ListofAgentsListed = ({item,name}) => {\r\n-  return (\r\n-    <div>\r\n-      <li\r\n-                      key={item._id}\r\n-                      className=\"bg-gray-100 p-3 rounded-lg shadow-md flex justify-between cursor-pointer items-center mb-3 w-full\"\r\n-                    >\r\n-                      <span className=\"font-medium text-gray-800\">{item.firstname}</span>\r\n-                      <span className=\"text-gray-600\">{item.phone}</span>\r\n-                      <span className=\"text-gray-600\">{item.notes}</span>\r\n-                    </li>\r\n-    </div>\r\n-  )\r\n+const ListofAgentsListed = ({ item, name }) => {\r\n+    return (\r\n+        <div>\r\n+            <li\r\n+                key={item._id}\r\n+                className=\"bg-gray-100 p-3 rounded-lg shadow-md flex justify-between cursor-pointer items-center mb-1 w-full\"\r\n+            >\r\n+                <span className=\"font-medium text-gray-800\">{item.firstname}</span>\r\n+                <span className=\"text-gray-600\">{item.phone}</span>\r\n+                <span className=\"text-gray-600\">{item.notes}</span>\r\n+            </li>\r\n+        </div>\r\n+    )\r\n }\r\n \r\n export default ListofAgentsListed\r\n"
+                },
+                {
+                    "date": 1738993104807,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,9 +4,9 @@\n     return (\r\n         <div>\r\n             <li\r\n                 key={item._id}\r\n-                className=\"bg-gray-100 p-3 rounded-lg shadow-md flex justify-between cursor-pointer items-center mb-1 w-full\"\r\n+                className=\"bg-gray-100 p-3 rounded-lg shadow-md flex justify-between cursor-pointer items-center  w-full\"\r\n             >\r\n                 <span className=\"font-medium text-gray-800\">{item.firstname}</span>\r\n                 <span className=\"text-gray-600\">{item.phone}</span>\r\n                 <span className=\"text-gray-600\">{item.notes}</span>\r\n"
+                },
+                {
+                    "date": 1738993224291,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import React from 'react'\r\n \r\n const ListofAgentsListed = ({ item, name }) => {\r\n     return (\r\n-        <div>\r\n+        <div className=' w-full'>\r\n             <li\r\n                 key={item._id}\r\n                 className=\"bg-gray-100 p-3 rounded-lg shadow-md flex justify-between cursor-pointer items-center  w-full\"\r\n             >\r\n"
+                },
+                {
+                    "date": 1738993232560,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import React from 'react'\r\n \r\n const ListofAgentsListed = ({ item, name }) => {\r\n     return (\r\n-        <div className=' w-full'>\r\n+        <div className=' w-[80'>\r\n             <li\r\n                 key={item._id}\r\n                 className=\"bg-gray-100 p-3 rounded-lg shadow-md flex justify-between cursor-pointer items-center  w-full\"\r\n             >\r\n"
+                },
+                {
+                    "date": 1738993242623,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import React from 'react'\r\n \r\n const ListofAgentsListed = ({ item, name }) => {\r\n     return (\r\n-        <div className=' w-[80'>\r\n+        <div className=' w-[70%]'>\r\n             <li\r\n                 key={item._id}\r\n                 className=\"bg-gray-100 p-3 rounded-lg shadow-md flex justify-between cursor-pointer items-center  w-full\"\r\n             >\r\n"
+                },
+                {
+                    "date": 1738993401120,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import React from 'react'\r\n \r\n const ListofAgentsListed = ({ item, name }) => {\r\n     return (\r\n-        <div className=' w-[70%]'>\r\n+        <div className=' w-[70%] flex items-center flex-col justify-center'>\r\n             <li\r\n                 key={item._id}\r\n                 className=\"bg-gray-100 p-3 rounded-lg shadow-md flex justify-between cursor-pointer items-center  w-full\"\r\n             >\r\n"
+                },
+                {
+                    "date": 1738993571260,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import React from 'react'\r\n \r\n-const ListofAgentsListed = ({ item, name }) => {\r\n+const ListofAgentsListed = ({ item,  }) => {\r\n     return (\r\n         <div className=' w-[70%] flex items-center flex-col justify-center'>\r\n             <li\r\n                 key={item._id}\r\n"
+                }
+            ],
+            "date": 1738991997120,
+            "name": "Commit-0",
+            "content": "import React from 'react'\r\n\r\nconst ListofAgentsListed = () => {\r\n  return (\r\n    <div>\r\n      \r\n    </div>\r\n  )\r\n}\r\n\r\nexport default ListofAgentsListed\r\n"
+        }
+    ]
+}
